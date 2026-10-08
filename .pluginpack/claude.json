@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "target": "claude",
+  "files": [
+    ".claude-plugin/marketplace.json",
+    "README.md",
+    "plugins/workspaces/.claude-plugin/plugin.json",
+    "plugins/workspaces/README.md",
+    "plugins/workspaces/assets/wellknown-logomark-512.png",
+    "plugins/workspaces/assets/wellknown-logomark.svg",
+    "plugins/workspaces/skills/run-playbook/SKILL.md",
+    "plugins/workspaces/skills/search-data-room/SKILL.md",
+    "plugins/workspaces/skills/using-workspaces/SKILL.md"
+  ]
+}

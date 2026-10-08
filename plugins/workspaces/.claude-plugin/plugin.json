@@ -1,0 +1,11 @@
+{
+  "name": "workspaces",
+  "version": "0.4.0",
+  "description": "Search your workspaces' documents with citations, and run your firm's own playbooks, in Wellknown Workspaces.",
+  "author": {
+    "name": "Wellknown Labs",
+    "url": "https://wellknownlabs.com"
+  },
+  "homepage": "https://workspaces.wellknownlabs.com",
+  "icon": "./assets/wellknown-logomark-512.png"
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "wellknown",
+  "version": "0.4.0",
+  "owner": {
+    "name": "Wellknown Labs",
+    "url": "https://wellknownlabs.com"
+  },
+  "plugins": [
+    {
+      "name": "workspaces",
+      "source": "./plugins/workspaces",
+      "description": "Search your workspaces' documents with citations, and run your firm's own playbooks, in Wellknown Workspaces."
+    }
+  ],
+  "description": "Wellknown Workspaces for Claude — skills for searching your workspaces' documents with citations. Needs the Wellknown Workspaces connector."
+}
