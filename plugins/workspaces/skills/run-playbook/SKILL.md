@@ -35,9 +35,11 @@ on a version from an earlier conversation, and never reconstruct one from memory
 6. **Check again before the long write-up.** Call `get_playbook` again with the same selector as
    step 1 (the `intent` or the `playbook_id`, never both) before you draft, then check the draft
    against every section before you hand it over.
-7. **File its claims.** After handing over, call `submit_claims` straight after your closing
-   sentence, under the rules `search-data-room` gives for when to file. Set `deliverable_title`,
-   and give each claim the `section_path` of the headings above it.
+7. **File its claims, then hand it over.** Once the deliverable is settled, write one sentence
+   that states what it concludes, and call `submit_claims` straight after that sentence, under
+   the rules `search-data-room` gives for what to file. Set `deliverable_title`, and give each
+   claim the `section_path` of the headings above it. Then hand over the full deliverable below
+   the result: the claims are its evidence, never the deliverable.
 
 ## Proposing a playbook
 

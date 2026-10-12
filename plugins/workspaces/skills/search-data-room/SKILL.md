@@ -1,6 +1,6 @@
 ---
 name: search-data-room
-description: Answer a question from the user's Wellknown Workspaces data room with cited evidence. Use for "what does the data room say about", "find the evidence for", "which documents mention", "summarise what we have on", "what does this chart show", or any question about what a workspace's documents say. Chooses between reading passages yourself and a synthesised answer, states coverage and gaps, and files the answer's claims for the person to check.
+description: Answer a question from the user's Wellknown Workspaces data room with cited evidence. Use for "what does the data room say about", "find the evidence for", "which documents mention", "summarise what we have on", "what does this chart show", or any question about what a workspace's documents say. Chooses between reading passages yourself and a synthesised answer, states coverage and gaps, files only the claims that answer the question for the person to check, and always writes the answer in full.
 ---
 
 # Search the data room
@@ -31,10 +31,44 @@ more than one workspace is authorized) on every workspace-scoped call.
 5. **Look at the page when the text is not enough.** For a chart, table or layout, call
    `get_page_images` with up to five `citation_ids`. A model's reading of a figure is
    `model_derived`, never the document's own words; say so.
-6. **Go deeper only when it matters.** When a passage you need rests on a chart or table not yet
-   read in depth, `gaps` name `request_enrichment` as the `remedy_tool`. It spends and may ask the
-   user to confirm: request only the citations you need.
-7. **Answer.**
+6. **Have the charts and tables read before you answer from them.** When the `un_escalated` gap
+   lists `citation_ids` among the passages you will answer from, a chart or table behind them has
+   not been read yet. Call `request_enrichment` with those `citation_ids`, one call per document,
+   and wait for its result; then read the readings with `fetch_document` on the same citations. It
+   spends and may ask the user to confirm: request only the citations your answer rests on. If
+   `request_enrichment` is not offered to you, answer from what is there and say which charts or
+   tables were not read.
+7. **Decide the answer.** Settle what the answer is before you write any of it, and which of its
+   statements answer the question. The claims are the evidence beside the answer, never the
+   answer: filing them never replaces it.
+8. **State it in one sentence, then file its claims.** Write one sentence that states the answer.
+   Call `submit_claims` straight after that sentence, with no other tool call between them,
+   task-list updates included.
+   - Only for the statements of your answer that answer a specific factual question, or for each
+     cited statement of a deliverable the user asked you to draft. Never for a summary, a "what
+     do we know about" overview, an outline, a list of documents or a request for a page. Send
+     the claims, never the document.
+   - Never for related material a search also returned: other figures from the same chart or
+     table, a total, a footnote, or a figure about a different subject or scope, such as one for
+     a whole business when the question asks about one of its products. The answer may still
+     mention it as context.
+   - Where sources disagree about the same thing, with the same subject, scope and measure, file
+     each value your answer gives.
+   - One datapoint a claim, with no document name, page or author in its text unless that is the
+     answer.
+   - After `answer_question`, its claims are already offered to the person: submit only claims
+     your own reply adds. Never file again a claim `search_knowledge` returned in `stored_claims`,
+     or one `answer_question` returned with a `claim_id`: it is already recorded.
+   - At most 100 per call; never split one reply's claims across calls.
+   - A `data_room` claim carries `citation_ids` you retrieved in this conversation. Give every
+     claim its honest `provenance`.
+   - `view_claims` reopens a deliverable's claims when the user asks. Only a person verifies a
+     claim.
+
+   When no claim is due, as for an overview, or every claim is already recorded, skip this step
+   and answer straight away.
+9. **Write the full answer below the claims.** Once `submit_claims` returns, answer the question
+   in full, in prose. Its result is not your reply.
    - Lead with the answer, then the evidence. Every statement from the data room carries its
      citation (`superseded` passages by `resolved_citation_id`, with a note that a newer version
      exists).
@@ -44,19 +78,6 @@ more than one workspace is authorized) on every workspace-scoped call.
    - If nothing relevant came back, or `answer_question` says the documents do not answer, say
      the data room does not appear to cover it. Never fill the gap with general knowledge
      presented as the data room's.
-8. **File the claims.** Call `submit_claims` straight after the closing sentence of your answer,
-   with no other tool call between them, task-list updates included.
-   - Only for the answer to a specific factual question, and for each cited statement your reply
-     uses. Never for a summary, a "what do we know about" overview, an outline, a list of
-     documents or a request for a page. Send the claims, never the document.
-   - After `answer_question`, its claims are already offered to the person: submit only claims
-     your own reply adds.
-   - At most 20 per call, choosing the ones that carry the reply; never split one reply across
-     calls.
-   - A `data_room` claim carries `citation_ids` you retrieved in this conversation. Give every
-     claim its honest `provenance`.
-   - `view_claims` reopens a deliverable's claims when the user asks. Only a person verifies a
-     claim.
 
 ## Principles
 
