@@ -29,8 +29,8 @@ more than one workspace is authorized) on every workspace-scoped call.
    neighbourhood. For a whole document, call `get_document_outline`, then `fetch_document` on the
    sections that matter. `list_documents` finds a document by title.
 5. **Look at the page when the text is not enough.** For a chart, table or layout, call
-   `get_page_images` with up to five `citation_ids`. A model's reading of a figure is
-   `model_derived`, never the document's own words; say so.
+   `get_page_images` with up to five `citation_ids`. It is for you: the person is not shown the
+   pages. A model's reading of a figure is `model_derived`, never the document's own words; say so.
 6. **Have the charts and tables read before you answer from them.** When the `un_escalated` gap
    lists `citation_ids` among the passages you will answer from, a chart or table behind them has
    not been read yet. Call `request_enrichment` with those `citation_ids`, one call per document,
