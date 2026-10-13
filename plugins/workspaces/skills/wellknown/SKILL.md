@@ -1,32 +1,62 @@
 ---
 name: wellknown
-description: Use when the user types /wellknown, mentions Wellknown, their data room, project files, claims or playbooks, or asks for analysis that should be grounded in their Wellknown project.
+description: Use when the user types /wellknown, mentions Wellknown, their data room, their workspace (they may call it a project) or its documents, claims or playbooks, or asks for analysis that should be grounded in their Wellknown workspace.
 ---
 
-# The user has invoked Wellknown. Their request must be answered from their Wellknown project through the Wellknown connector, not from general knowledge and not from the web.
+# The user has invoked Wellknown. Their request must be answered from their Wellknown workspace through the Wellknown connector, not from general knowledge and not from the web.
 
 ## Rule 1: the first action is a Wellknown tool call
 
-Before writing any answer, plan, or web search, call a Wellknown tool. No exceptions, even if the request looks simple or you think you already know the answer.
-1. Check your tool list for tools from the Wellknown connector (names containing "Wellknown", such as describe_workspace, search_knowledge, list_playbooks).
-2. If they are not listed, they may be deferred. Search your tools for "Wellknown" and load them before doing anything else.
-3. If no Wellknown tools exist after that search, stop. Tell the user in one line: "The Wellknown connector isn't on for this chat. Turn it on via + > Connectors > Wellknown, then send your request again." Do not answer the request without it.
+Before writing any answer, plan, or web search, call a Wellknown tool. No exceptions, even if the
+request looks simple or you think you already know the answer.
+1. Check your tool list for tools from the Wellknown connector, such as `open_binding`,
+   `describe_workspace`, `search_knowledge` and `list_playbooks`. In some apps their names also
+   contain "Wellknown".
+2. If they are not listed, they may be deferred. Search your tools for "Wellknown" and load them
+   before doing anything else.
+3. If no Wellknown tools exist after that search, stop. Tell the user in one line: "The Wellknown
+   connector isn't on for this chat. Turn it on in this app's connectors, then send your request
+   again." Do not answer the request without it.
 
-## Rule 2: orient, then retrieve
-1. Call describe_workspace (and describe_binding or open_binding if the conversation is not yet linked to a project) to confirm which project and data room you are working in. If several projects could match, ask the user which one.
-2. If the request is a recognisable consulting task (due diligence, market scan, competitor analysis, etc.), call list_playbooks and, if one fits, get_playbook. Follow the playbook's steps, quality checks, tone and output style. The user's own instructions in this message take priority where they conflict.
-3. Retrieve evidence with search_knowledge. Batch related questions into one call where possible. Use list_documents, get_document_outline, fetch_document and get_page_images when you need a specific file or page.
-4. Use recall for project context such as earlier decisions or hypotheses.
+## Rule 2: open the binding, orient, then retrieve
 
-## Rule 3: cite and report claims
-- Cite every Wellknown-sourced fact inline with its visible claim ID (for example WK8241) where a footnote number would go.
-- Whenever your reply contains WK IDs, call submit_claims afterwards with the headers used, the claim IDs used, and their position relative to those headers, so the Claims Panel can render.
-- If the data room does not contain the answer, say so plainly. You may then offer web search or general knowledge, clearly labelled as not from Wellknown, and offer to log the gap with create_open_question or request_enrichment.
+1. Call `open_binding` first, once per conversation, as `using-workspaces` describes, and pass its
+   `binding` on every other call. Only the user chooses which workspaces this conversation may
+   reach. If several could match the request, ask the user which one.
+2. Call `describe_workspace` to confirm which workspace and data room you are working in.
+3. If the request is a recognisable consulting task (due diligence, market scan, competitor
+   analysis, etc.), follow `run-playbook`: call `get_playbook` with an `intent` saying what the work
+   is (`list_playbooks` shows which playbooks exist). Follow the playbook's steps, quality checks,
+   tone and output style, or the firm's `general_instructions` when no playbook matches. The user's
+   own instructions in this message take priority where they conflict.
+4. Retrieve evidence with `search_knowledge`, following `search-data-room`. Batch related questions
+   into one call where possible. Use `list_documents`, `get_document_outline` and `fetch_document`
+   when you need a specific document or section, and `get_page_images` to look at a page yourself.
+   When the user asks to see pages, use `show_pages`.
+5. Use `recall` for workspace context such as earlier decisions or hypotheses.
+
+## Rule 3: cite, then file the claims
+
+- Cite every Wellknown-sourced fact with the citation of the passage it came from, as
+  `search-data-room` describes.
+- When your reply answers a specific factual question, or drafts a deliverable the user asked for,
+  file its claims in this order: write one sentence that states the answer, call `submit_claims`
+  straight after it, then write the full answer below its result. Give each claim its honest
+  `provenance`, its `citation_ids` when it comes from the data room, and the headings above it in
+  your reply (`section_path`), so the Claims Panel can show it in place. `search-data-room` says
+  which statements become claims.
+- If the data room does not contain the answer, say so plainly, log the gap with
+  `create_open_question` saying what is missing, and tell the user you did. You may then offer web
+  search or general knowledge, clearly labelled as not from Wellknown.
 
 ## Rule 4: stay on Wellknown for the rest of the task
-Once invoked, keep using Wellknown for follow-up questions in the same task without the user having to repeat /wellknown. Save durable project context (new decisions, changed timelines, hypotheses the user states) with remember when the user asks for it.
+
+Once invoked, keep using Wellknown for follow-up questions in the same task without the user having
+to repeat /wellknown. Save durable workspace context (new decisions, changed timelines, hypotheses
+the user states) with `remember` when the user asks for it.
 
 # Never
+
 - Never answer from general knowledge first and check Wellknown afterwards.
 - Never run a web search before the Wellknown search.
-- Never invent claim IDs or cite an ID that a Wellknown tool did not return.
+- Never invent a citation or a claim, or cite an id that a Wellknown tool did not return.

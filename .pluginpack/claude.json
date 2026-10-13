@@ -10,6 +10,7 @@
     "plugins/workspaces/assets/wellknown-logomark.svg",
     "plugins/workspaces/skills/run-playbook/SKILL.md",
     "plugins/workspaces/skills/search-data-room/SKILL.md",
-    "plugins/workspaces/skills/using-workspaces/SKILL.md"
+    "plugins/workspaces/skills/using-workspaces/SKILL.md",
+    "plugins/workspaces/skills/wellknown/SKILL.md"
   ]
 }
